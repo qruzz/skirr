@@ -1,6 +1,5 @@
 const APIURL = 'https://api.electricitymap.org/v3';
-const API_TOKEN = 'rILfhiFrZ3emXcVMGU62';
-// const API_TOKEN = process.env.API_TOKEN;
+const API_TOKEN = 'YOUR_API_KEY_HERE';
 
 /**
  * This function takes the latitude and longitude in an objects as the parameters,

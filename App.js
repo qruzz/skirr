@@ -51,39 +51,9 @@ export default class App extends React.PureComponent {
 	 */
 	componentDidMount() {
 		Permissions.check('location').then((response) => {
-			console.log(response);
 			if (response) {
 				this.init();
 			}
-		});
-	}
-
-	/**
-	 * This function stops the loading animation and then starts the transition animations
-	 * into the main view. It animates both the opacity of the content as well as the
-	 * background colour of the main view.
-	 * @returns	{void}
-	 */
-	endLoadingAnimation = () => {
-		const { progress, opacity, backgroundColor } = this.state;
-
-		// Stop the loading animation and start the transition to the main screen
-		progress.stopAnimation(() => {
-			this.setState({
-				loading: false,
-			}, () => {
-				// Run opacity and background color animations in parallel
-				Animated.parallel([
-					Animated.timing(opacity, {
-						toValue: 1,
-						duration: 1000,
-					}),
-					Animated.timing(backgroundColor, {
-						toValue: 1,
-						duration: 1000,
-					}),
-				]).start();
-			});
 		});
 	}
 
@@ -116,14 +86,42 @@ export default class App extends React.PureComponent {
 				// Initialise the carbon intensity
 				this.setCarbonIntensity(coords);
 
-				// TODO: Uncomment for production
 				// Update the carbon intensity after UDATE_INTERVAL ms
-				// setInterval(this.setCarbonIntensity, this.UPDATE_INTERVAL);
+				setInterval(this.setCarbonIntensity, this.UPDATE_INTERVAL);
 
 				// Let the animation complete before transitioning
 				setTimeout(() => {
 					this.endLoadingAnimation();
 				}, 4000);
+			});
+		});
+	}
+
+	/**
+	 * This function stops the loading animation and then starts the transition animations
+	 * into the main view. It animates both the opacity of the content as well as the
+	 * background colour of the main view.
+	 * @returns	{void}
+	 */
+	endLoadingAnimation = () => {
+		const { progress, opacity, backgroundColor } = this.state;
+
+		// Stop the loading animation and start the transition to the main screen
+		progress.stopAnimation(() => {
+			this.setState({
+				loading: false,
+			}, () => {
+				// Run opacity and background color animations in parallel
+				Animated.parallel([
+					Animated.timing(opacity, {
+						toValue: 1,
+						duration: 1000,
+					}),
+					Animated.timing(backgroundColor, {
+						toValue: 1,
+						duration: 1000,
+					}),
+				]).start();
 			});
 		});
 	}
