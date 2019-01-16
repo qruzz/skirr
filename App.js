@@ -10,9 +10,8 @@ import LottieView from 'lottie-react-native';
 import { getLiveCarbonIntensity } from './src/utils/api';
 import { getLocationData } from './src/utils/functions';
 import * as CONST from './src/utils/consts';
+import * as COLORS from './src/utils/colors';
 
-// const circleAnimation = require('./src/resources/spiral_loop.json');
-const circleAnimation = require('./src/resources/checkmark.json');
 const loader = require('./src/resources/world.json');
 
 export default class App extends React.PureComponent {
@@ -112,15 +111,23 @@ export default class App extends React.PureComponent {
 		const { loading, progress, opacity, carbonIntensityData } = this.state;
 		if (!loading && carbonIntensityData) {
 			return (
-				<Animated.View style={[
-					styles.centerCircle,
-					{opacity: opacity}
-				]}>
-					<Text style={styles.carbonIntensity}>
-						{carbonIntensityData.carbonIntensity}
-					</Text>
+				<Animated.View
+					style={[
+						styles.centeredContainer,
+						{opacity: opacity},
+					]}>
+					<View style={styles.centerCircle}>
+						<Text style={styles.carbonIntensity}>
+							{carbonIntensityData.carbonIntensity}
+						</Text>
+					</View>
+					<View style={styles.absoluteMessageContainer}>
+						<Text style={styles.absoluteMessage}>
+							HELLO
+						</Text>
+					</View>
 				</Animated.View>
-			)
+			);
 		}
 
 		return (
@@ -153,6 +160,12 @@ const styles = StyleSheet.create({
 	animatedLayer: {
 		height: CONST.HEIGHT,
 	},
+	centeredContainer: {
+		width: CONST.WIDTH,
+		height: CONST.HEIGHT,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
 	centerCircle: {
 		width: CONST.HEIGHT * 0.19,
 		height: CONST.HEIGHT * 0.19,
@@ -167,4 +180,13 @@ const styles = StyleSheet.create({
 		fontWeight: '500',
 		color: '#FFFFFF',
 	},
+	absoluteMessageContainer: {
+		width: CONST.WIDTH,
+		position: 'absolute',
+		bottom: CONST.HEIGHT * 0.2,
+		alignItems: 'center',
+	},
+	absoluteMessage: {
+		color: '#FFFFFF',
+	}
 });
