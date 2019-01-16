@@ -10,19 +10,25 @@ import LottieView from 'lottie-react-native';
 import {
 	getLocationData,
 	determineMessage,
-	determineColor
+	determineColor,
 } from './src/utils/functions';
-import { getLiveCarbonIntensity } from './src/utils/api';
+import getLiveCarbonIntensity from './src/utils/api';
 import * as CONST from './src/utils/consts';
 import * as COLORS from './src/utils/colors';
 
 const loader = require('./src/resources/world.json');
 
 export default class App extends React.PureComponent {
+	/**
+	 * The constructor is taking care of initialising the state of the application with
+	 * regard to the location data, animation values, and the carbon intensity values.
+	 * @param	{object}	props	The parent props
+	 * @returns	{void}
+	 */
 	constructor(props) {
 		super(props);
 
-		// The initial state 
+		// The initial state
 		this.state = {
 			coords: null,
 			carbonIntensityData: null,
@@ -30,7 +36,7 @@ export default class App extends React.PureComponent {
 			opacity: new Animated.Value(0),
 			loading: true,
 			backgroundColor: new Animated.Value(0),
-		}
+		};
 
 		// The update interval for the timer
 		this.UPDATE_INTERVAL = 5000;
@@ -98,10 +104,11 @@ export default class App extends React.PureComponent {
 				coords: {
 					lat: position.coords.latitude,
 					lng: position.coords.longitude,
-				}
+				},
 			}, () => {
+				const { coords } = this.state;
 				// Initialise the carbon intensity
-				this.setCarbonIntensity(this.state.coords);
+				this.setCarbonIntensity(coords);
 
 				// TODO: Uncomment for production
 				// Update the carbon intensity after UDATE_INTERVAL ms
@@ -121,8 +128,9 @@ export default class App extends React.PureComponent {
 	 * @returns	{void}
 	 */
 	setCarbonIntensity = () => {
+		const { coords } = this.state;
 		// GET the live carbon intensity from the current zone
-		getLiveCarbonIntensity(this.state.coords).then((result) => {
+		getLiveCarbonIntensity(coords).then((result) => {
 			if (!result.error) {
 				this.setState({
 					carbonIntensityData: {
@@ -143,7 +151,12 @@ export default class App extends React.PureComponent {
 	 * @returns	{jsx}	The Main View
 	 */
 	renderMainView = () => {
-		const { loading, progress, opacity, carbonIntensityData } = this.state;
+		const {
+			loading,
+			progress,
+			opacity,
+			carbonIntensityData,
+		} = this.state;
 
 		// If it is no longer loading, and the carbon intensity data has been set in state
 		if (!loading && carbonIntensityData) {
@@ -152,10 +165,11 @@ export default class App extends React.PureComponent {
 					style={[
 						styles.centeredContainer,
 						{
-							opacity: opacity,
+							opacity,
 							backgroundColor: determineColor(carbonIntensityData.carbonIntensity),
 						},
-					]}>
+					]}
+				>
 					<View style={styles.centerCircle}>
 						<Text style={styles.carbonIntensity}>
 							{carbonIntensityData.carbonIntensity}

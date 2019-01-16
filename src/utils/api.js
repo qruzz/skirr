@@ -10,16 +10,16 @@ const API_TOKEN = 'rILfhiFrZ3emXcVMGU62';
  * @param   {object}	coords	The lat and lng coordinates
  * @returns	{object}	Returns either the error or response as an object
  */
-export function getLiveCarbonIntensity(coords) {
-    return fetch(`${APIURL}/carbon-intensity/latest?lon=${coords.lng}&lat=${coords.lat}`, {
-        method: 'GET',
-        headers: {
-            'auth-token': API_TOKEN,
-        },
-    }).then(async (response) => {
-        const json = await response.json();
-        return (json);
-    }).catch((error) => {
-        console.log(error);
-    });
+export default function getLiveCarbonIntensity(coords) {
+	return fetch(`${APIURL}/carbon-intensity/latest?lon=${coords.lng}&lat=${coords.lat}`, {
+		method: 'GET',
+		headers: {
+			'auth-token': API_TOKEN,
+		},
+	}).then(async (response) => {
+		const json = await response.json();
+		return (json);
+	}).catch((error) => {
+		return ({ error });
+	});
 }
