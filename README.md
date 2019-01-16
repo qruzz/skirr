@@ -9,3 +9,9 @@ To run the application, insert your API KEY in the api.js file located within th
     $ yarn start --reset-cache
     $ react-native run-ios --simulator="iPhone XR"
 ```
+
+The application can also be run on android in similar fashion - just open your AVD and exchange the last command with the following:
+
+```
+    $ react-native run-android
+```
