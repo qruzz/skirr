@@ -6,6 +6,7 @@ import {
 	Animated,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
+import Permissions from 'react-native-permissions';
 
 import {
 	getLocationData,
@@ -49,7 +50,12 @@ export default class App extends React.PureComponent {
 	 * @returns	{void}
 	 */
 	componentDidMount() {
-		this.init();
+		Permissions.check('location').then((response) => {
+			console.log(response);
+			if (response) {
+				this.init();
+			}
+		});
 	}
 
 	/**
