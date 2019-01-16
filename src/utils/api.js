@@ -8,7 +8,7 @@ export function getLiveCarbonIntensity(coords) {
         method: 'GET',
         headers: {
             'auth-token': API_TOKEN,
-        }
+        },
     }).then(async (response) => {
         const json = await response.json();
         return (json);

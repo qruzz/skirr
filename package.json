@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
+    "lottie-react-native": "^2.5.11",
     "react": "16.6.3",
     "react-native": "0.57.8"
   },
