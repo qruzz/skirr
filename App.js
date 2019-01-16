@@ -22,6 +22,7 @@ export default class App extends React.PureComponent {
 	constructor(props) {
 		super(props);
 
+		// The initial state 
 		this.state = {
 			coords: null,
 			carbonIntensityData: null,
@@ -35,24 +36,31 @@ export default class App extends React.PureComponent {
 		this.UPDATE_INTERVAL = 5000;
 	}
 
+	/**
+	 * This React lifecycle function takes care calls the initialisation function
+	 * immediatly after the App Component has been mounted. This will initialise
+	 * the state values and get the app ready for use.
+	 * @returns	{void}
+	 */
 	componentDidMount() {
 		this.init();
 	}
 
-	playLoadingAnimation = () => {
-		const { progress } = this.state;
-		Animated.timing(progress, {
-			toValue: 1,
-			duration: 4000,
-		}).start();
-	}
-
-	pauseLoadingAnimation = () => {
+	/**
+	 * This function stops the loading animation and then starts the transition animations
+	 * into the main view. It animates both the opacity of the content as well as the
+	 * background colour of the main view.
+	 * @returns	{void}
+	 */
+	endLoadingAnimation = () => {
 		const { progress, opacity, backgroundColor } = this.state;
+
+		// Stop the loading animation and start the transition to the main screen
 		progress.stopAnimation(() => {
 			this.setState({
 				loading: false,
 			}, () => {
+				// Run opacity and background color animations in parallel
 				Animated.parallel([
 					Animated.timing(opacity, {
 						toValue: 1,
@@ -68,14 +76,21 @@ export default class App extends React.PureComponent {
 	}
 
 	/**
-	 * This function initialises the location data from the GPS and sets it in state.
-	 * After setting the location coordinates in state, it initialises the carbon intensity
-	 * by making an initial call to the api function, setting the result in state. It then
-	 * sets the fetching of location data to execute every UPDATE_INTERVAL ms
+	 * This function initialises start the loading animation and then gets the location data
+	 * from the GPS and sets it in state. After setting the location coordinates in state, it
+	 * initialises the carbon intensity by making an initial call to the api function, setting
+	 * the result in state. It then sets the fetching of location data to execute every
+	 * UPDATE_INTERVAL ms. It will then start the transition to the display.
 	 * @returns	{void}
 	 */
 	init = () => {
-		this.playLoadingAnimation();
+		const { progress } = this.state;
+
+		// Start the loading animation
+		Animated.timing(progress, {
+			toValue: 1,
+			duration: 4000,
+		}).start();
 
 		// Initialise the location data
 		getLocationData().then((position) => {
@@ -88,18 +103,21 @@ export default class App extends React.PureComponent {
 				// Initialise the carbon intensity
 				this.setCarbonIntensity(this.state.coords);
 
+				// TODO: Uncomment for production
 				// Update the carbon intensity after UDATE_INTERVAL ms
 				// setInterval(this.setCarbonIntensity, this.UPDATE_INTERVAL);
 
+				// Let the animation complete before transitioning
 				setTimeout(() => {
-					this.pauseLoadingAnimation();
+					this.endLoadingAnimation();
 				}, 4000);
 			});
 		});
 	}
 
 	/**
-	 * 
+	 * This function calls the API to GET the live carbon intensity in the zone corresponding to
+	 * the location data set in state. It then stores the response from the API in state.
 	 * @returns	{void}
 	 */
 	setCarbonIntensity = () => {
@@ -116,8 +134,18 @@ export default class App extends React.PureComponent {
 		});
 	}
 
+	/**
+	 * This function starts off by returning a loading animation to be rendered on in the main view.
+	 * When the state properties states that it is no longer loading, and the carbon intensity data
+	 * has been set, the function will return an animated view. The view gets its opacity animated
+	 * from 0 to 1, and its background colour gets animated from BG_COLOR to the one returned
+	 * by the helper function determineColor.
+	 * @returns	{jsx}	The Main View
+	 */
 	renderMainView = () => {
 		const { loading, progress, opacity, carbonIntensityData } = this.state;
+
+		// If it is no longer loading, and the carbon intensity data has been set in state
 		if (!loading && carbonIntensityData) {
 			return (
 				<Animated.View
@@ -153,6 +181,10 @@ export default class App extends React.PureComponent {
 		);
 	}
 
+	/**
+	 * The React render functions takes care of rendering the application
+	 * @returns	{jsx}	The App component
+	 */
 	render() {
 		return (
 			<View style={styles.container}>
@@ -162,6 +194,7 @@ export default class App extends React.PureComponent {
 	}
 }
 
+// Styles for the App Component
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
